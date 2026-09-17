@@ -99,7 +99,7 @@ def quote_order(request: QuoteRequest):
             raise HTTPException(status_code=404, detail=f"Book {item.book_id} not found")
         subtotal += book["price"] * item.quantity
 
-    discount = round(subtotal * 0.10, 2) if subtotal > 100 else 0.0
+    discount = round(subtotal * 0.10, 2) if subtotal >= 100 else 0.0
     discounted = subtotal - discount
     shipping = 0.0 if discounted >= 50 else 5.99
     total = round(discounted + shipping, 2)
