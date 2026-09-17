@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+triage.json
+triage.md
+pytest_output.txt
