@@ -5,3 +5,4 @@ __pycache__/
 triage.json
 triage.md
 pytest_output.txt
+evals/report.json

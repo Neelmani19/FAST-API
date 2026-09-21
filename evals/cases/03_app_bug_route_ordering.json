@@ -1,0 +1,15 @@
+{
+  "id": "app_bug_route_ordering",
+  "kind": "ui_flow",
+  "description": "The /books/search endpoint returns 422 because a path route captures 'search'.",
+  "input": {
+    "pytest_output": "tests/test_search.py::test_search_returns_matches FAILED\n\n    def test_search_returns_matches(client):\n        resp = client.get(\"/books/search\", params={\"q\": \"python\"})\n>       assert resp.status_code == 200\nE       assert 422 == 200\nE        +  where 422 = <Response [422]>.status_code\n\n    Response body: {\"detail\":[{\"loc\":[\"path\",\"book_id\"],\"msg\":\"Input should be a valid integer, unable to parse string as an integer\",\"input\":\"search\"}]}\n\ntests/test_search.py:15: AssertionError\n1 failed, 52 passed",
+    "code_context": "# main.py route declarations, in this order:\n@app.get(\"/books/{book_id}\")\ndef get_book(book_id: int): ...\n\n@app.get(\"/books/search\")\ndef search_books(q: str): ..."
+  },
+  "expected": {
+    "category": "app_bug",
+    "file": "main.py",
+    "line": 55,
+    "root_cause": "The dynamic route /books/{book_id} is declared before /books/search, so 'search' is captured as book_id and fails integer parsing (422). The search route must be declared before the {book_id} route."
+  }
+}

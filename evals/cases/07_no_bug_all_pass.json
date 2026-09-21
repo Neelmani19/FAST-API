@@ -1,0 +1,15 @@
+{
+  "id": "no_bug_all_pass",
+  "kind": "clean",
+  "description": "A clean run where every test passes. The agent must NOT invent a problem.",
+  "input": {
+    "pytest_output": "tests/test_books.py ..........          [ 40%]\ntests/test_orders.py .............        [ 75%]\ntests/test_search.py ....                 [ 90%]\ntests/test_health.py ..                   [100%]\n\n==================== 53 passed in 1.24s ====================\n(exit code 0)",
+    "code_context": "No failures reported. The suite ran to completion with all tests green."
+  },
+  "expected": {
+    "category": "no_bug",
+    "file": null,
+    "line": null,
+    "root_cause": ""
+  }
+}

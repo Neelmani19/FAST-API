@@ -1,0 +1,15 @@
+{
+  "id": "app_bug_shipping_boundary",
+  "kind": "business_rule",
+  "description": "An order whose total reaches exactly $50 is wrongly charged shipping.",
+  "input": {
+    "pytest_output": "tests/test_orders.py::test_total_of_exactly_50_gets_free_shipping FAILED\n\n    def test_total_of_exactly_50_gets_free_shipping(client):\n        # Spec: shipping is free once the total REACHES $50 (i.e. 50 or more).\n        resp = client.post(\"/orders/quote\", json={\"items\": [{\"book_id\": 7, \"quantity\": 1}]})\n        body = resp.json()\n>       assert body[\"shipping\"] == 0.0\nE       assert 5.99 == 0.0\n\ntests/test_orders.py:58: AssertionError\n1 failed, 52 passed",
+    "code_context": "# main.py, quote_order()\n# Business rule: shipping is free once the discounted total is $50 or more.\nshipping = 0.0 if discounted > 50 else 5.99"
+  },
+  "expected": {
+    "category": "app_bug",
+    "file": "main.py",
+    "line": 97,
+    "root_cause": "Free shipping uses > 50 instead of >= 50, so a total of exactly 50 is wrongly charged $5.99. The spec says shipping is free when the total reaches 50 (50 or more)."
+  }
+}
