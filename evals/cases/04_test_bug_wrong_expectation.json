@@ -1,0 +1,15 @@
+{
+  "id": "test_bug_wrong_expectation",
+  "kind": "business_rule",
+  "description": "The app is correct; the test encodes an expectation that contradicts the spec.",
+  "input": {
+    "pytest_output": "tests/test_orders.py::test_order_over_100_gets_discount FAILED\n\n    def test_order_over_100_gets_discount(client):\n        # A $100 order should get the 10% discount.   <-- test author's assumption\n        resp = client.post(\"/orders/quote\", json={\"items\": [{\"book_id\": 9, \"quantity\": 1}]})\n        body = resp.json()\n>       assert body[\"discount\"] == 10.0\nE       assert 0.0 == 10.0\n\ntests/test_orders.py:70: AssertionError\n1 failed, 52 passed",
+    "code_context": "# The written requirement (specs/pricing.md):\n#   \"Orders with a subtotal OVER $100 get a 10% discount.\"\n# main.py, quote_order():\ndiscount = round(subtotal * 0.10, 2) if subtotal > 100 else 0.0"
+  },
+  "expected": {
+    "category": "test_bug",
+    "file": "tests/test_orders.py",
+    "line": 70,
+    "root_cause": "The application is correct per the spec (discount applies only OVER 100, so a $100 order gets none). The test wrongly expects a discount at exactly 100, so the test's expectation is the defect, not the code."
+  }
+}

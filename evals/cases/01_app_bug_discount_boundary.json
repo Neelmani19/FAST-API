@@ -1,0 +1,15 @@
+{
+  "id": "app_bug_discount_boundary",
+  "kind": "business_rule",
+  "description": "An order at exactly the $100 threshold wrongly receives the discount.",
+  "input": {
+    "pytest_output": "tests/test_orders.py::test_subtotal_of_exactly_100_gets_no_discount FAILED\n\n    def test_subtotal_of_exactly_100_gets_no_discount(client):\n        # Spec: the 10% discount applies when subtotal is OVER 100, so 100.00 does not qualify.\n        resp = client.post(\"/orders/quote\", json={\"items\": [{\"book_id\": 9, \"quantity\": 1}]})\n        body = resp.json()\n>       assert body[\"discount\"] == pytest.approx(0.0)\nE       assert 10.0 == 0.0 \u00b1 1.0e-06\n\ntests/test_orders.py:42: AssertionError\n1 failed, 52 passed",
+    "code_context": "# main.py, quote_order()\n# Business rule: orders with a subtotal OVER $100 get a 10% discount.\ndiscount = round(subtotal * 0.10, 2) if subtotal >= 100 else 0.0"
+  },
+  "expected": {
+    "category": "app_bug",
+    "file": "main.py",
+    "line": 95,
+    "root_cause": "The discount uses >= 100 instead of > 100, so a subtotal of exactly 100 incorrectly gets the 10% discount. The spec says the discount applies only when subtotal is over 100."
+  }
+}

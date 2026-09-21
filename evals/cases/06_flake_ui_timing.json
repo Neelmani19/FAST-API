@@ -1,0 +1,15 @@
+{
+  "id": "flake_ui_timing",
+  "kind": "ui_flow",
+  "description": "A UI end-to-end test fails intermittently on timing, and passes on retry.",
+  "input": {
+    "pytest_output": "tests/e2e/test_checkout.py::test_apply_promo_then_pay FAILED (attempt 1)\n\n    playwright._impl._api_types.TimeoutError: Timeout 5000ms exceeded.\n    waiting for selector \"#order-confirmation\" to be visible\n\ntests/e2e/test_checkout.py::test_apply_promo_then_pay PASSED (attempt 2, on retry)\n\nNote: this same test passed on the previous CI run and passes locally. No app or test code changed in this PR.",
+    "code_context": "The checkout confirmation element sometimes renders slightly after the 5s wait under CI load. The assertion and the app behaviour are otherwise correct; the failure did not reproduce on retry."
+  },
+  "expected": {
+    "category": "flake",
+    "file": null,
+    "line": null,
+    "root_cause": "An intermittent timing/rendering issue under CI load, not a code defect: the confirmation element renders just after the 5s wait and the test passes on retry. The fix is a more robust wait, not an application change."
+  }
+}

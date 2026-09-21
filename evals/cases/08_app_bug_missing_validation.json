@@ -1,0 +1,15 @@
+{
+  "id": "app_bug_missing_validation",
+  "kind": "business_rule",
+  "description": "Creating a book with a non-positive price is wrongly accepted.",
+  "input": {
+    "pytest_output": "tests/test_books.py::test_create_book_rejects_zero_price FAILED\n\n    def test_create_book_rejects_zero_price(client):\n        # Spec: price must be greater than 0; a bad price should be rejected with 422.\n        resp = client.post(\"/books\", json={\"title\": \"X\", \"author\": \"Y\", \"price\": 0})\n>       assert resp.status_code == 422\nE       assert 201 == 422\n\ntests/test_books.py:33: AssertionError\n1 failed, 52 passed",
+    "code_context": "# main.py schema for creating a book:\nclass BookIn(BaseModel):\n    title: str = Field(min_length=1)\n    author: str = Field(min_length=1)\n    price: float   # <-- no constraint"
+  },
+  "expected": {
+    "category": "app_bug",
+    "file": "main.py",
+    "line": 24,
+    "root_cause": "The price field has no positivity constraint (missing Field(gt=0)), so a price of 0 is accepted and returns 201 instead of the expected 422. The spec requires price to be greater than 0."
+  }
+}

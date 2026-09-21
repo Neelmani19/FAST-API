@@ -1,0 +1,15 @@
+{
+  "id": "environment_import_path",
+  "kind": "environment",
+  "description": "The suite can't even import the app in CI; no tests actually run.",
+  "input": {
+    "pytest_output": "==================== ERRORS ====================\n____ ERROR collecting tests/conftest.py ____\ntests/conftest.py:6: in <module>\n    import main\nE   ModuleNotFoundError: No module named 'main'\n=============== 1 error in 0.11s ===============\n(exit code 2) -- no tests were collected",
+    "code_context": "CI runs the bare `pytest` console script. main.py lives at the repo root.\nThere is no pyproject.toml / pytest.ini, no tests/__init__.py, and no root conftest.py.\nUnder pytest's default import mode, only the tests/ directory is added to sys.path, not the repo root."
+  },
+  "expected": {
+    "category": "environment",
+    "file": null,
+    "line": null,
+    "root_cause": "The repo root is not on sys.path under the bare pytest command, so `import main` fails during collection. This is a packaging/config problem (no pyproject pythonpath setting), not a bug in the application or the tests."
+  }
+}
